@@ -35,10 +35,10 @@ A base bruta do **AprovaEdu Analytics** é composta por 9 tabelas relacionais co
   - `justificativa` e `nota`/`acertos` de ausentes: Preservados como `null` ou preenchidos com rótulo explícito `"Não Informado"`.
 - **Justificativa**: Impede distorções no cálculo de médias numéricas (evita tratar ausência em prova como nota zero ou atraso inexistente como valor nulo).
 
-### 2.5. Registros Suspeitos de Aprovação
+### 2.5. Deduplicação de Registros Suspeitos de Aprovação
 - **Problema Encontrado**: 15 registros em `aprovacoes_vestibular.csv` possuem o valor `"Cadastro duplicado?"` na coluna `chamada`.
-- **Tratamento Escolhido**: Deduplicação lógica verificando a combinação (`aluno_id`, `universidade`, `curso_aprovado`, `ano_vestibular`). Se for duplicata real, descarta-se a linha excedente; caso contrário, altera-se a chamada para `"Não Informado"`.
-- **Justificativa**: Mantém a precisão na contagem da taxa de aprovação sem desconsiderar aprovações legítimas.
+- **Tratamento Escolhido**: Remoção (drop) dessas 15 linhas no pipeline de ETL.
+- **Justificativa**: A investigação comprovou que cada um desses 15 alunos já possuía outra linha idêntica de aprovação no banco, porém com a chamada oficial (ex.: `"Lista de espera"`, `"1ª chamada"`). Manter essas 15 linhas geraria contagem dupla e inflaria erroneamente a taxa de aprovação do cursinho.
 
 ---
 
