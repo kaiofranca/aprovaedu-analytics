@@ -160,11 +160,22 @@ def limpar_resultados_simulados(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _limpar_lista_materias(val):
+    if pd.isna(val):
+        return val
+    partes = [p.strip() for p in str(val).split(";")]
+    partes_limpas = [MAPA_MATERIAS.get(p, MAPA_MATERIAS.get(p.title(), p.title())) for p in partes]
+    return "; ".join(partes_limpas)
+
+
 def limpar_professores(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df["materia_principal"] = padronizar_materia(df["materia_principal"])
+    df["materias_ensina"] = df["materias_ensina"].apply(_limpar_lista_materias)
     df["nome_professor"] = padronizar_texto_title(df["nome_professor"])
+    df["email_professor"] = df["email_professor"].fillna("Não Informado")
     df["status_professor"] = padronizar_texto_title(df["status_professor"])
+    df["observacoes"] = df["observacoes"].fillna("Sem Observações")
     df["data_contratacao"] = padronizar_data_mista(df["data_contratacao"])
     return df
 
