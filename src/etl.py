@@ -64,7 +64,9 @@ def limpar_estudantes(df: pd.DataFrame) -> pd.DataFrame:
     df["cidade"] = padronizar_texto_title(df["cidade"])
     df["cidade"] = df["cidade"].replace({"Maracanau": "Maracanaú"})
     df["escola_origem"] = df["escola_origem"].str.strip().replace(MAPA_ESCOLA)
+    df["escola_origem"] = df["escola_origem"].fillna("Não Informado")
     df["canal_captacao"] = padronizar_texto_title(df["canal_captacao"])
+    df["canal_captacao"] = df["canal_captacao"].fillna("Não Informado")
     df["data_nascimento"] = padronizar_data_mista(df["data_nascimento"])
     df["data_cadastro"] = padronizar_data_mista(df["data_cadastro"])
     return df
@@ -103,7 +105,9 @@ def limpar_matriculas(df: pd.DataFrame) -> pd.DataFrame:
     df["materia_declarada"] = padronizar_materia(df["materia_declarada"])
     df["status_matricula"] = padronizar_texto_title(df["status_matricula"])
     df["status_matricula"] = df["status_matricula"].replace({"Concluida": "Concluída"})
+    df["status_matricula"] = df["status_matricula"].fillna("Não Informado")
     df["origem_captacao"] = padronizar_texto_title(df["origem_captacao"])
+    df["origem_captacao"] = df["origem_captacao"].fillna("Não Informado")
     df["bolsa_percentual"] = df["bolsa_percentual"].fillna(0)
     df["data_matricula"] = padronizar_data_mista(df["data_matricula"])
     return df
@@ -123,6 +127,7 @@ def limpar_aulas(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df["materia"] = padronizar_materia(df["materia"])
     df["modalidade_aula"] = padronizar_texto_title(df["modalidade_aula"])
+    df["modalidade_aula"] = df["modalidade_aula"].fillna("Não Informado")
     df["tema_aula"] = df["tema_aula"].str.strip()
     df["data_aula"] = padronizar_data_mista(df["data_aula"])
     return df
@@ -145,7 +150,9 @@ def limpar_simulados(df: pd.DataFrame) -> pd.DataFrame:
     df["materia"] = padronizar_materia(df["materia"])
     df["professor_nome_informado"] = padronizar_texto_title(df["professor_nome_informado"])
     df["dificuldade"] = padronizar_texto_title(df["dificuldade"])
+    df["dificuldade"] = df["dificuldade"].fillna("Não Informado")
     df["tipo_simulado"] = padronizar_texto_title(df["tipo_simulado"])
+    df["tema"] = df["tema"].fillna("Não Informado")
     df["data_simulado"] = padronizar_data_mista(df["data_simulado"])
     return df
 
@@ -155,7 +162,9 @@ def limpar_resultados_simulados(df: pd.DataFrame) -> pd.DataFrame:
     df["status_realizacao"] = padronizar_texto_title(df["status_realizacao"])
     df["status_realizacao"] = df["status_realizacao"].fillna("Não Informado")
     df["dispositivo"] = padronizar_texto_title(df["dispositivo"])
+    df["dispositivo"] = df["dispositivo"].fillna("Não Informado")
     df["unidade_aplicacao"] = padronizar_texto_title(df["unidade_aplicacao"])
+    df["unidade_aplicacao"] = df["unidade_aplicacao"].fillna("Não Informado")
     df["inicio_simulado"] = padronizar_datetime_mista(df["inicio_simulado"])
     return df
 
