@@ -1,0 +1,17 @@
+# Manipulação e Análise de Dados
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Machine Learning & Estatística
+scikit-learn>=1.3.0
+joblib>=1.3.0
+
+# Visualização de Dados & Dashboard
+streamlit>=1.28.0
+plotly>=5.17.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Ambiente de Desenvolvimento & Notebooks
+jupyter>=1.0.0
+notebook>=7.0.0

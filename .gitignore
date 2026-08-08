@@ -1,0 +1,13 @@
+# Ambiente Virtual
+venv/
+
+# Caches de Execução
+__pycache__/
+.ipynb_checkpoints/
+
+# Dados Processados e Modelos Gerados
+data/processed/*.db
+models/*.pkl
+
+# Configurações Locais de IDE
+.vscode/
