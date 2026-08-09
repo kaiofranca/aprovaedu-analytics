@@ -137,7 +137,71 @@ Avaliei o desempenho no vestibular conforme a formação escolar prévia dos alu
 
 ## 4. Desempenho do Modelo Preditivo
 
+### 4.1. Objetivo
+
+Treinei um modelo de Machine Learning para prever se um aluno será **aprovado ou não** no vestibular, utilizando seus indicadores acadêmicos e comportamentais registrados no cursinho.
+
+### 4.2. Escolha do Algoritmo: Random Forest
+
+Optei pelo **Random Forest (Floresta Aleatória)** pelos seguintes motivos:
+
+1. **Robustez**: Utiliza um ensemble de múltiplas árvores de decisão, o que reduz o risco de overfitting em comparação com uma árvore única.
+2. **Interpretabilidade**: Fornece nativamente o ranking de **importância das features**, permitindo que a coordenação pedagógica saiba exatamente *quais variáveis monitorar com prioridade*.
+3. **Flexibilidade**: Lida com features numéricas e categóricas sem necessidade de normalização ou padronização prévia dos dados.
+4. **Adequação ao volume de dados**: Com 812 amostras, modelos mais complexos, como redes neurais, não teriam dados suficientes para justificar sua complexidade adicional.
+
+### 4.3. Features Utilizadas (Variáveis de Entrada)
+
+Cada feature foi escolhida por representar uma **dimensão distinta do comportamento acadêmico** do aluno:
+
+| Feature | Dimensão que Representa | Origem no Banco |
+|---|---|---|
+| `pct_presenca` | Engajamento presencial | `presencas_aulas` |
+| `media_nota_simulados` | Rendimento acadêmico direto | `resultados_simulados` |
+| `simulados_finalizados` | Comprometimento com avaliações | `resultados_simulados` |
+| `total_matriculas` | Volume de disciplinas cursadas | `matriculas` |
+| `matriculas_concluidas` | Persistência e retenção | `matriculas` |
+| `media_bolsa` | Perfil socioeconômico | `matriculas` |
+| `nota_diagnostico` | Nível de entrada do aluno | `matriculas` |
+| `escola_origem` | Background educacional | `estudantes` |
+| `canal_captacao` | Perfil de engajamento | `estudantes` |
+
+**Variável Alvo (Target)**: `aprovado` — 1 se o aluno possui pelo menos 1 registro em `aprovacoes_vestibular`, 0 caso contrário.
+
+### 4.4. Resultados e Métricas
+
+Configuração: 100 árvores, profundidade máxima 10, `class_weight="balanced"`, split 80/20 estratificado (`random_state=42`).
+
+| Métrica | Valor |
+|---|---|
+| **Acurácia** | 63,19% |
+| **F1-Score** (classe Aprovado) | 48,28% |
+| **AUC-ROC** | 60,86% |
+
+![Matriz de confusão](figures/modelo_matriz_confusao.png)
+
+![Curva ROC](figures/modelo_curva_roc.png)
+
+### 4.5. Importância das Features
+
+![Importância das features no modelo preditivo](figures/modelo_importancia_features.png)
+
+**Interpretação**:
+- As **features numéricas** dominam a importância do modelo: *média de nota nos simulados* (14,0%), *nota diagnóstico* (13,5%), *simulados finalizados* (12,9%) e *presença em aulas* (12,7%).
+- As **features categóricas** (escola de origem, canal de captação) contribuem marginalmente (~1,2% a 1,7% cada).
+- **Conclusão pedagógica**: O desempenho acadêmico prático (notas, participação em simulados, persistência nas matrículas) é o principal preditor de aprovação — não o perfil demográfico ou a origem do aluno.
+
+### 4.6. Limitações do Modelo
+
+- A acurácia de ~63% indica que o modelo tem capacidade limitada de discriminação, o que é esperado para dados educacionais onde muitos fatores externos (estudo individual em casa, motivação pessoal, dificuldade da prova) não são capturados pelo banco de dados do cursinho.
+- O modelo deve ser interpretado como uma **ferramenta de apoio à triagem de risco**, não como um preditor absoluto.
+
 ---
 
 ## 5. Conclusões Gerais
-Os resultados das análises obrigatórias e extras confirmam a solidez operacional do cursinho e trazem direcionamentos claros tanto para a coordenação pedagógica (reforço no bloco de Exatas e monitoramento por simulados) quanto para o marketing (foco em programas de indicação).
+
+Os resultados das análises obrigatórias, extras e do modelo preditivo confirmam a solidez operacional do cursinho e trazem direcionamentos claros:
+
+1. **Para a coordenação pedagógica**: Reforço no bloco de Exatas (Matemática, Física e Química), monitoramento contínuo do desempenho em simulados (principal preditor de aprovação) e atenção especial à persistência dos alunos nas matrículas.
+2. **Para o marketing**: Investir no canal de Indicação (43,4% de taxa de aprovação) e criar programas de incentivo ao boca a boca entre alunos veteranos.
+3. **Para a gestão**: O cursinho atua como equalizador social (diferença de apenas 3,4% entre alunos de escola pública e privada) e o programa de bolsas não prejudica o desempenho geral.
