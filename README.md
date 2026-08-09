@@ -1,79 +1,118 @@
-# AprovaEdu Analytics 📊
+# AprovaEdu Analytics
 
-Projeto de engenharia de dados, análise exploratória, modelagem preditiva e dashboard para o **AprovaEdu**.
+Projeto de **engenharia de dados, análise exploratória, modelagem preditiva e dashboard BI** para o cursinho pré-vestibular **AprovaEdu**, cobrindo dados operacionais e pedagógicos de 2021 a 2025.
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```text
 aprovaedu-analytics/
-├── README.md                   # Documentação do projeto
+├── README.md                   # Documentação principal do projeto
 ├── requirements.txt            # Dependências Python
 ├── Dockerfile                  # Containerização da aplicação
+├── .dockerignore               # Arquivos excluídos da imagem Docker
+├── .gitignore                  # Arquivos ignorados pelo Git
+├── main.py                     # Script principal (executa ETL + treinamento do modelo)
 ├── data/
-│   ├── raw/                    # CSVs originais (intocados)
-│   └── processed/              # Base tratada (CSV/Parquet + Banco SQLite .db)
+│   ├── raw/                    # CSVs originais (9 tabelas brutas)
+│   └── processed/              # CSVs tratados + Banco SQLite (aprovaedu.db)
 ├── src/
-│   ├── etl.py                  # Ingestão e limpeza de dados
+│   ├── etl.py                  # Pipeline de ETL (limpeza e padronização)
+│   ├── database.py             # Conexão e persistência no SQLite
 │   ├── features.py             # Engenharia de atributos (Feature Engineering)
-│   ├── database.py             # Schema e manipulação SQLite
-│   └── model.py                 # Treino e avaliação de modelos de ML
+│   └── model.py                # Treinamento e avaliação do modelo Random Forest
 ├── notebooks/
-│   ├── 01_exploracao.ipynb     # Análise Exploratória de Dados (EDA)
-│   ├── 02_tratamento.ipynb     # Experimentos de limpeza e transformação
-│   ├── 03_analises_obrigatorias.ipynb  # Resposta às análises obrigatórias do negócio
-│   └── 04_modelo_preditivo.ipynb # Experimentos de Machine Learning
+│   ├── exploracao.ipynb        # Análise Exploratória de Dados
+│   ├── analises.ipynb          # Análises obrigatórias e extras
+│   └── modelo_preditivo.ipynb  # Treinamento, avaliação e gráficos do modelo de ML
 ├── dashboard/
-│   └── app.py                  # Aplicação em Streamlit
+│   └── app.py                  # Dashboard BI interativo (Streamlit + Plotly)
+├── models/
+│   └── modelo.pkl              # Modelo treinado serializado (gerado pelo main.py)
 ├── reports/
-│   └── relatorio_final.md       # Relatório final executivo e técnico
+│   ├── relatorio_final.md      # Relatório executivo e técnico consolidado
+│   └── figures/                # Gráficos gerados pelos notebooks (.png)
 └── docs/
-    └── decisoes_tecnicas.md    # Registro de decisões arquiteturais e técnicas
+    ├── decisoes_tecnicas.md    # Registro de decisões arquiteturais e técnicas
+    └── uso_ia.md               # Transparência sobre o uso de IA no projeto
 ```
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
-- **Linguagem**: Python 3.10+
-- **Manipulação de Dados**: Pandas, NumPy
-- **Banco de Dados**: SQLite
-- **Machine Learning**: Scikit-Learn
-- **Visualização & Dashboard**: Streamlit, Plotly, Matplotlib, Seaborn
-- **Containerização**: Docker
+| Tecnologia | Versão | Função no Projeto |
+|---|---|---|
+| **Python** | 3.10+ | Linguagem principal |
+| **Pandas** | ≥ 2.0 | Manipulação e transformação de dados |
+| **NumPy** | ≥ 1.24 | Operações numéricas |
+| **SQLite 3** | Nativo | Banco de dados relacional embarcado |
+| **Scikit-Learn** | ≥ 1.3 | Algoritmos de Machine Learning (Random Forest) |
+| **Joblib** | ≥ 1.3 | Serialização de modelos treinados |
+| **Streamlit** | ≥ 1.28 | Dashboard BI interativo |
+| **Plotly** | ≥ 5.17 | Gráficos dinâmicos no dashboard |
+| **Matplotlib** | ≥ 3.7 | Gráficos estáticos para o relatório |
+| **Seaborn** | ≥ 0.12 | Visualizações estatísticas nos notebooks |
+| **Docker** | — | Containerização da aplicação |
 
 ---
 
-## 🚀 Como Executar
+## Como Executar
 
-### 1. Execução Local
+### Opção 1: Execução Local
 
 ```bash
-# Criar e ativar ambiente virtual
-python -m venv venv
-source venv/bin/activate  # No Linux/macOS
-# venv\Scripts\activate   # No Windows
+# 1. Clonar o repositório
+git clone https://github.com/kaiofranca/aprovaedu-analytics.git
+cd aprovaedu-analytics
 
-# Instalar dependências
+# 2. Criar e ativar ambiente virtual
+python3 -m venv venv
+source venv/bin/activate        # Linux/macOS
+# venv\Scripts\activate         # Windows
+
+# 3. Instalar dependências
 pip install -r requirements.txt
 
-# Executar Ingestão / ETL
-python src/etl.py
+# 4. Executar o pipeline completo (ETL + Modelo)
+python3 main.py
 
-# Executar Treinamento do Modelo
-python src/model.py
-
-# Iniciar Dashboard Streamlit
+# 5. Iniciar o Dashboard
 streamlit run dashboard/app.py
 ```
 
-### 2. Execução via Docker
+Acesse o dashboard em **http://localhost:8501**.
+
+### Opção 2: Execução via Docker
 
 ```bash
-# Construir a imagem Docker
+# 1. Construir a imagem (inclui ETL + treinamento do modelo)
 docker build -t aprovaedu-analytics .
 
-# Executar o container (disponibiliza o Dashboard na porta 8501)
+# 2. Rodar o container
 docker run -p 8501:8501 aprovaedu-analytics
 ```
+
+Acesse o dashboard em **http://localhost:8501**.
+
+---
+
+## Funcionalidades do Dashboard
+
+O painel BI está organizado em **4 abas interativas**:
+
+| Aba | Conteúdo |
+|---|---|
+| **Visão Geral** | KPIs principais (alunos, aprovados, taxa), distribuição por escola e canal |
+| **Desempenho Acadêmico** | Evolução da aprovação por ano, notas por matéria, top cursos |
+| **Frequência e Engajamento** | Presença vs aprovação, eficiência dos canais, impacto da escola |
+| **Simulador Preditivo** | Simulador interativo com o modelo Random Forest (ativado por botão) |
+
+---
+
+## Documentação Complementar
+
+- **[Relatório Final Executivo](reports/relatorio_final.md)**: Síntese completa das análises obrigatórias, extras e do modelo preditivo.
+- **[Decisões Técnicas](docs/decisoes_tecnicas.md)**: Registro formal de todas as decisões arquiteturais e de modelagem.
+- **[Transparência sobre o Uso de IA](docs/uso_ia.md)**: Declaração sobre como ferramentas de IA foram utilizadas no projeto.
