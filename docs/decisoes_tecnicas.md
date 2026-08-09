@@ -14,7 +14,7 @@ A base bruta do **AprovaEdu Analytics** é composta por 9 tabelas relacionais co
 
 | Tecnologia | Função no Projeto | Justificativa Técnica |
 |---|---|---|
-| **Python 3.12** | Linguagem Principal | Linguagem padrão de mercado para engenharia de dados, analytics e machine learning. |
+| **Python 3.10** | Linguagem Principal | Linguagem padrão de mercado para engenharia de dados, analytics e machine learning. |
 | **SQLite 3** | Banco de Dados Relacional | Embarcado, sem necessidade de servidores externos, nativo do Python (`sqlite3`) e com excelente performance para relatórios e dashboards. |
 | **Pandas & NumPy** | Leitura e Transformação de Dados | Alta eficiência na limpeza de strings, conversão de datas mistas e agregações estatísticas. |
 | **Scikit-Learn** | Algoritmos de Machine Learning | Padrão da indústria para classificação, divisão estratificada de dados e métricas de avaliação. |
@@ -91,4 +91,20 @@ A base bruta do **AprovaEdu Analytics** é composta por 9 tabelas relacionais co
 
 ### 5.5. Persistência e Integração com Produção
 - **Decisão**: Exportação do modelo treinado para `models/modelo.pkl` via `joblib`.
-- **Justificativa**: Permite o carregamento instantâneo do modelo no simulador preditivo em tempo real do Dashboard Streamlit na Sprint 4, sem necessidade de re-treinamento a cada interação do usuário.
+- **Justificativa**: Permite o carregamento instantâneo do modelo no simulador preditivo em tempo real do Dashboard Streamlit, sem necessidade de re-treinamento a cada interação do usuário.
+
+---
+
+## 6. Containerização e Automação (Docker)
+
+### 6.1. Script de Automação (`main.py`)
+- **Decisão**: Criação de um script `main.py` na raiz do projeto que executa o pipeline completo (ETL → Treinamento do Modelo) com um único comando.
+- **Justificativa**: Elimina a necessidade de executar múltiplos scripts manualmente. Um único `python3 main.py` gera o banco SQLite e o modelo treinado.
+
+### 6.2. Imagem Docker
+- **Decisão**: Construção de uma imagem Docker baseada em `python:3.10-slim` que executa o `main.py` durante o build (`RUN python main.py`) e inicia o dashboard Streamlit no `CMD`.
+- **Justificativa**: O container já contém os dados tratados e o modelo treinado ao ser iniciado, eliminando a necessidade de qualquer configuração prévia. Bastam dois comandos: `docker build` e `docker run`.
+
+### 6.3. `.dockerignore`
+- **Decisão**: Criação de um arquivo `.dockerignore` excluindo `venv/`, `.git/`, `data/processed/`, `models/` e caches do Python.
+- **Justificativa**: Reduz drasticamente o tamanho da imagem Docker. Os diretórios `data/processed/` e `models/` são excluídos porque serão regenerados pelo `main.py` dentro do container.
