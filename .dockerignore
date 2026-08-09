@@ -1,0 +1,19 @@
+# Ambiente virtual local
+venv/
+
+# Git
+.git/
+.gitignore
+
+# Caches Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Dados processados e modelos (serão regenerados pelo main.py)
+data/processed/
+models/
+
+# IDE e configurações locais
+.vscode/
+.idea/
